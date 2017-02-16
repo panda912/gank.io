@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="searchObj"
+            type="com.sgb.gank.data.search.module.SearchListObj" />
+
+        <variable
+            name="actionHandler"
+            type="com.sgb.gank.ui.search.SearchItemActionHandler" />
+
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/selector_bg_white"
+        android:onClick="@{() -> actionHandler.onItemClick(searchObj)}"
+        android:padding="15dp">
+
+        <TextView
+            android:id="@+id/title_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:text="@{searchObj.title}"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/tv_title_size"
+            tools:text="我是标题" />
+
+        <TextView
+            android:id="@+id/author_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/title_tv"
+            android:layout_marginTop="8dp"
+            android:text="@{searchObj.author}"
+            tools:text="张三" />
+
+        <TextView
+            android:id="@+id/type_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/author_tv"
+            android:layout_marginLeft="5dp"
+            android:layout_toRightOf="@id/author_tv"
+            android:text="@{searchObj.type}"
+            tools:text="2016-10-1" />
+
+    </RelativeLayout>
+</layout>

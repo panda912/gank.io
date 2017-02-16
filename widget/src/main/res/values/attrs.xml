@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- rounded ImageView -->
+    <declare-styleable name="RoundedImageView">
+        <attr name="corner_radius" format="dimension" />
+        <attr name="border_width" format="dimension" />
+        <attr name="border_color" format="color" />
+        <attr name="mutate_background" format="boolean" />
+        <attr name="oval" format="boolean" />
+        <attr name="android:scaleType" />
+    </declare-styleable>
+
+    <declare-styleable name="RatioImageView">
+        <attr name="ratio" format="float" />
+    </declare-styleable>
+
+    <!--//////////////////////////////////////////////////////////////////////////////////-->
+    <!-- 可设置方向的viewpage -->
+    <declare-styleable name="OrientateViewPager">
+        <attr name="orientation">
+            <enum name="horizontal" value="0" />
+            <enum name="vertical" value="1" />
+        </attr>
+    </declare-styleable>
+
+    <!--//////////////////////////////////////////////////////////////////////////////////-->
+    <!-- 标签 流式布局 FlowLayout -->
+    <declare-styleable name="FlowLayout">
+        <attr name="itemLeft" format="dimension" />
+        <attr name="itemTop" format="dimension" />
+        <attr name="itemRight" format="dimension" />
+        <attr name="itemBottom" format="dimension" />
+        <attr name="choiceMode" format="enum">
+            <enum name="none" value="0" />
+            <enum name="singleChoice" value="1" />
+            <enum name="multipleChoice" value="2" />
+        </attr>
+        <attr name="maxChecked" format="integer" />
+    </declare-styleable>
+
+</resources>

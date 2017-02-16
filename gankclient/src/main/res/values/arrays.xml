@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="main_tab_titles">
+        <item>Android</item>
+        <item>iOS</item>
+        <item>福利</item>
+    </string-array>
+
+</resources>

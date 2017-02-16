@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.sgb.gank">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.READ_LOGS" />
+    <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
+    <uses-permission android:name="com.android.launcher.permission.UNINSTALL_SHORTCUT" />
+    <uses-permission android:name="com.android.launcher.permission.READ_SETTINGS" />
+
+    <application
+        android:name=".GankApplication"
+        android:allowBackup="true"
+        android:icon="${APP_ICON}"
+        android:label="${APP_NAME}"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme.NoActionBar"
+        tools:replace="android:icon,android:label">
+
+        <receiver
+            android:name=".net.receiver.NetworkReceiver"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+                <action android:name="android.net.wifi.WIFI_STATE_CHANGED" />
+                <action android:name="android.net.wifi.STATE_CHANGE" />
+            </intent-filter>
+        </receiver>
+
+        <service android:name="xiaofei.library.hermes.HermesService$HermesService0" />
+
+        <activity android:name=".ui.splash.SplashActivity" />
+        <activity
+            android:name=".ui.main.MainActivity"
+            android:label="${APP_NAME}"
+            android:launchMode="singleTask">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".ui.search.SearchActivity"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".ui.setting.SettingActivity"
+            android:label="@string/title_activity_setting" />
+        <activity
+            android:name=".ui.webview.WebViewActivity"
+            android:process=":web" />
+
+    </application>
+
+</manifest>
