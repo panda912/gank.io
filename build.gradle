@@ -26,3 +26,29 @@ allprojects {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+
+ext {
+    minSdkVersion = 15
+    targetSdkVersion = 25
+    compileSdkVersion = 25
+    buildToolsVersion = '25.0.2'
+
+    supportLibraryVersion = '25.1.1'
+    multidexVersion = '1.0.1'
+    flexboxVersion = '0.2.3'
+    titanRecyclerViewVersion = '0.2.5'
+    picassoVersion = '2.5.2'
+    picassoTransformationsVersion = '2.1.0'
+    gsonVersion = '2.8.0'
+    okhttpVersion = '3.6.0'
+    retrofitVersion = '2.1.0'
+    stethoVersion = '1.4.2'
+    rxJavaVersion = '2.0.5'
+    rxAndroidVersion = '2.0.1'
+    rxLifecycleVersion = '2.0.1'
+    sqlBriteVersion = "1.1.1"
+    hermesEventBusVersion = '0.3.0'
+    jsoupVersion = '1.9.2'
+    leakcanaryVersion = '1.5'
+    buglyVersion = '2.2.2'
+}

@@ -7,8 +7,8 @@ Properties props = new Properties()
 props.load(new FileInputStream(file("sign.properties")))
 
 android {
-    compileSdkVersion COMPILE_SDK_VERSION as int
-    buildToolsVersion BUILD_TOOLS_VERSION
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -47,10 +47,10 @@ android {
 
     defaultConfig {
         applicationId "com.sgb.gank"
-        minSdkVersion MIN_SDK_VERSION as int
-        targetSdkVersion TARGET_SDK_VERSION as int
-        versionCode APP_VERSION_CODE as int
-        versionName APP_VERSION_NAME
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode 1
+        versionName "1.0"
         multiDexEnabled true
         testInstrumentationRunner "android.support.test.runner.AndroidJunitRunner"
     }
@@ -131,41 +131,41 @@ dependencies {
     debugCompile project(path: ':widget', configuration: 'debug')
     releaseCompile project(path: ':widget', configuration: 'release')
     testCompile 'junit:junit:4.12'
-    compile "com.android.support:multidex:${MULTIDEX_VERSION}"
-    compile("com.android.support:appcompat-v7:${SUPPORT_VERSION}") {
+    compile "com.android.support:multidex:$rootProject.multidexVersion"
+    compile("com.android.support:appcompat-v7:$rootProject.supportLibraryVersion") {
         exclude group: 'com.android.support', module: 'support-v4'
         exclude group: 'com.android.support', module: 'support-compat'
         exclude group: 'com.android.support', module: 'support-vector-drawable'
     }
-    compile("com.android.support:cardview-v7:${SUPPORT_VERSION}")
-    compile("com.android.support:recyclerview-v7:${SUPPORT_VERSION}") {
+    compile("com.android.support:cardview-v7:$rootProject.supportLibraryVersion")
+    compile("com.android.support:recyclerview-v7:$rootProject.supportLibraryVersion") {
         exclude group: 'com.android.support', module: 'support-compat'
         exclude group: 'com.android.support', module: 'support-core-ui'
     }
-    compile("com.android.support:customtabs:${SUPPORT_VERSION}") {
+    compile("com.android.support:customtabs:$rootProject.supportLibraryVersion") {
         exclude group: 'com.android.support', module: 'support-compat'
     }
-    compile "com.youzan:titan:${TITAN_RV_VERSION}"
-    compile "com.squareup.okhttp3:okhttp:${OKHTTP_VERSION}"
-    compile("com.squareup.okhttp3:logging-interceptor:${OKHTTP_VERSION}") {
+    compile "com.youzan:titan:$rootProject.titanRecyclerViewVersion"
+    compile "com.squareup.picasso:picasso:$rootProject.picassoVersion"
+    compile("jp.wasabeef:picasso-transformations:$rootProject.picassoTransformationsVersion") {
+        exclude module: 'picasso'
+    }
+    compile "com.squareup.okhttp3:okhttp:$rootProject.okhttpVersion"
+    compile("com.squareup.okhttp3:logging-interceptor:$rootProject.okhttpVersion") {
         exclude group: 'com.squareup.okhttp3'
     }
-    compile("com.squareup.retrofit2:retrofit:${RETROFIT_VERSION}") {
+    compile("com.squareup.retrofit2:retrofit:$rootProject.retrofitVersion") {
         exclude group: 'com.squareup.okhttp3', module: 'okhttp'
     }
-    compile "com.squareup.retrofit2:converter-gson:${RETROFIT_VERSION}"
+    compile "com.squareup.retrofit2:converter-gson:$rootProject.retrofitVersion"
 
 //    compile 'com.squareup.retrofit2:adapter-rxjava2:2.2.0'
 //    not release,暂时使用 jakewharton 的个人库
     compile 'com.jakewharton.retrofit:retrofit2-rxjava2-adapter:1.0.0'
-    compile "com.squareup.retrofit2:converter-scalars:${RETROFIT_VERSION}"
-    compile "com.google.code.gson:gson:${GSON_VERSION}"
-    compile "com.squareup.picasso:picasso:${PICASSO_VERSION}"
-    compile("jp.wasabeef:picasso-transformations:${PICASSO_TRANSFORMATIONS_VERSION}") {
-        exclude module: 'picasso'
-    }
-    compile "io.reactivex.rxjava2:rxjava:${RXJAVA_VERSION}"
-    compile("io.reactivex.rxjava2:rxandroid:${RXANDROID_VERSION}@aar") {
+    compile "com.squareup.retrofit2:converter-scalars:$rootProject.retrofitVersion"
+    compile "com.google.code.gson:gson:$rootProject.gsonVersion"
+    compile "io.reactivex.rxjava2:rxjava:$rootProject.rxJavaVersion"
+    compile("io.reactivex.rxjava2:rxandroid:$rootProject.rxAndroidVersion@aar") {
         exclude module: 'rxjava'
     }
 //    compile 'com.jakewharton.rxbinding:rxbinding:1.0.0'
@@ -173,25 +173,25 @@ dependencies {
 //    https://github.com/JakeWharton/RxBinding/issues/350
 //    https://github.com/JakeWharton/RxBinding/issues/281
     compile 'com.github.JakeWharton.RxBinding:rxbinding:d7774aa'
-    compile "com.trello.rxlifecycle2:rxlifecycle:${RXLIFECYCLE_VERSION}"
-    compile "com.trello.rxlifecycle2:rxlifecycle-android:${RXLIFECYCLE_VERSION}@aar"
+    compile "com.trello.rxlifecycle2:rxlifecycle:$rootProject.rxLifecycleVersion"
+    compile "com.trello.rxlifecycle2:rxlifecycle-android:$rootProject.rxLifecycleVersion@aar"
     compile 'com.tbruyelle.rxpermissions2:rxpermissions:0.9.1@aar'
 //    compile "com.squareup.sqlbrite:sqlbrite:8fb42a9"
 
-    compile("xiaofei.library:hermes-eventbus:${HERMES_EVENTBUS_VERSION}") {
+    compile("xiaofei.library:hermes-eventbus:$rootProject.hermesEventBusVersion") {
         exclude group: 'com.google.code.gson', module: 'gson'
         exclude group: 'com.android.support', module: 'appcompat-v7'
     }
-    compile "org.jsoup:jsoup:${JSOUP_VERSION}"
-    compile "com.facebook.stetho:stetho:${STETHO_VERSION}"
-    compile "com.facebook.stetho:stetho-js-rhino:${STETHO_VERSION}"
-    compile("com.facebook.stetho:stetho-okhttp3:${STETHO_VERSION}") {
+    compile "org.jsoup:jsoup:$rootProject.jsoupVersion"
+    compile "com.facebook.stetho:stetho:$rootProject.stethoVersion"
+    compile "com.facebook.stetho:stetho-js-rhino:$rootProject.stethoVersion"
+    compile("com.facebook.stetho:stetho-okhttp3:$rootProject.stethoVersion") {
         exclude group: 'com.facebook.stetho', module: 'stetho'
         exclude group: 'com.squareup.okhttp3', module: 'okhttp'
     }
-    compile "com.tencent.bugly:crashreport:${BUGLY_VERSION}"
-    debugCompile "com.squareup.leakcanary:leakcanary-android:${LEAKCANARY_VERSION}"
-    releaseCompile "com.squareup.leakcanary:leakcanary-android-no-op:${LEAKCANARY_VERSION}"
+    compile "com.tencent.bugly:crashreport:$rootProject.buglyVersion"
+    debugCompile "com.squareup.leakcanary:leakcanary-android:$rootProject.leakcanaryVersion"
+    releaseCompile "com.squareup.leakcanary:leakcanary-android-no-op:$rootProject.leakcanaryVersion"
 //    compile "com.squareup.sqlbrite:sqlbrite:${SQLBRITE_VERSION}"
     compile 'com.google.dagger:dagger:2.9'
     annotationProcessor 'com.google.dagger:dagger-compiler:2.9'
