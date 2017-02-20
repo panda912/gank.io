@@ -9,8 +9,6 @@ import com.facebook.stetho.Stetho;
 import com.sgb.gank.util.AppUtils;
 import com.sgb.gank.util.BuglyUtils;
 
-import io.realm.Realm;
-import io.realm.RealmConfiguration;
 import xiaofei.library.hermeseventbus.HermesEventBus;
 
 /**
@@ -30,11 +28,11 @@ public class GankApplication extends Application implements Application.Activity
         super.onCreate();
         sInstance = this;
 
-        Realm.init(this);
-        RealmConfiguration config = new RealmConfiguration.Builder()
-                .name("gank.realm")
-                .build();
-        Realm.setDefaultConfiguration(config);
+//        Realm.init(this);
+//        RealmConfiguration config = new RealmConfiguration.Builder()
+//                .name("gank.realm")
+//                .build();
+//        Realm.setDefaultConfiguration(config);
 
         String processName = AppUtils.getProcessName(this);
         if (BuildConfig.APPLICATION_ID.equalsIgnoreCase(processName)) {

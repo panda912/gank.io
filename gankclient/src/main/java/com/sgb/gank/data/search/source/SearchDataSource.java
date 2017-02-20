@@ -11,17 +11,7 @@ import io.reactivex.Flowable;
  */
 public interface SearchDataSource {
 
-    interface SearchCallback {
-        void onSuccess(List<SearchListObj> list);
-
-        void onFailure(String msg);
-    }
-
-    @Deprecated
-    void getSearchList(String keyword, SearchCallback callback);
-
     Flowable<List<SearchListObj>> getSearchList(String keyword);
 
     void saveSearchList(String keyword, List<SearchListObj> list);
-
 }

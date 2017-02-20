@@ -18,6 +18,9 @@ import android.widget.TextView;
 
 import com.sgb.gank.R;
 import com.sgb.gank.data.search.module.SearchListObj;
+import com.sgb.gank.data.search.source.SearchRepository;
+import com.sgb.gank.data.search.source.local.SearchLocalDataSource;
+import com.sgb.gank.data.search.source.remote.SearchRemoteDataSource;
 import com.sgb.gank.databinding.ActivitySearchBinding;
 import com.sgb.gank.databinding.ItemSearchListBinding;
 import com.sgb.gank.ui.BaseActivity;
@@ -63,7 +66,7 @@ public class SearchActivity extends BaseActivity implements SearchContract.View,
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
-        mPresenter = new SearchPresenter(this);
+        mPresenter = new SearchPresenter(this, SearchRepository.getInstance(SearchRemoteDataSource.getInstance(), SearchLocalDataSource.getInstance(getApplicationContext())));
 
         mCustomTabActivityHelper = new CustomTabActivityHelper();
 

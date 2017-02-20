@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 //apply plugin: 'android-apt'
 apply plugin: 'me.tatarka.retrolambda'
-apply plugin: 'realm-android'
+//apply plugin: 'realm-android'
 
 Properties props = new Properties()
 props.load(new FileInputStream(file("sign.properties")))
@@ -34,6 +34,7 @@ android {
     sourceSets {
         main {
             java.srcDirs = ['src/main/java']
+            resources.srcDirs = ['src/main/res']
             jniLibs.srcDirs = ['libs']
         }
     }

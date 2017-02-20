@@ -123,7 +123,6 @@ public abstract class BaseMainListFragment extends BaseFragment {
                 .subscribe(new Consumer<MainListResBody>() {
                     @Override
                     public void accept(MainListResBody resBody) throws Exception {
-                        PLog.e("onNext", resBody.toString());
                         mAdapter.addDataEnd(resBody.results);
                         mReqPage++;
 

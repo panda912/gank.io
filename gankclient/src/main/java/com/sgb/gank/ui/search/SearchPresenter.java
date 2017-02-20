@@ -2,7 +2,6 @@ package com.sgb.gank.ui.search;
 
 import com.sgb.gank.data.search.module.SearchListObj;
 import com.sgb.gank.data.search.source.SearchRepository;
-import com.sgb.gank.data.search.source.remote.SearchRemoteDataSource;
 
 import java.util.List;
 
@@ -17,11 +16,10 @@ public class SearchPresenter implements SearchContract.Presenter {
 
     private SearchRepository mRepository;
 
-    public SearchPresenter(SearchContract.View searchView) {
+    public SearchPresenter(SearchContract.View searchView, SearchRepository repository) {
         mSearchView = searchView;
         mSearchView.setPresenter(this);
-
-        mRepository = SearchRepository.getInstance(SearchRemoteDataSource.getInstance());
+        mRepository = repository;
     }
 
     @Override
@@ -36,18 +34,6 @@ public class SearchPresenter implements SearchContract.Presenter {
 
     @Override
     public void loadResults(String keyword) {
-//        mRepository.getSearchList(keyword, new SearchDataSource.SearchCallback() {
-//            @Override
-//            public void onSuccess(List<SearchListObj> list) {
-//                mSearchView.showResults(list);
-//            }
-//
-//            @Override
-//            public void onFailure(String msg) {
-//
-//            }
-//        });
-
         mRepository.getSearchList(keyword)
                 .subscribe(new Consumer<List<SearchListObj>>() {
                     @Override

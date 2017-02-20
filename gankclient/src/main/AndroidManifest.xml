@@ -36,17 +36,19 @@
 
         <service android:name="xiaofei.library.hermes.HermesService$HermesService0" />
 
-        <activity android:name=".ui.splash.SplashActivity" />
         <activity
-            android:name=".ui.main.MainActivity"
-            android:label="${APP_NAME}"
-            android:launchMode="singleTask">
+            android:name=".ui.splash.SplashActivity"
+            android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".ui.main.MainActivity"
+            android:label="${APP_NAME}"
+            android:launchMode="singleTask" />
         <activity
             android:name=".ui.search.SearchActivity"
             android:windowSoftInputMode="adjustResize" />
