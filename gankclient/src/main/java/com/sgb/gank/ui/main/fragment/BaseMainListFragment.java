@@ -88,7 +88,7 @@ public abstract class BaseMainListFragment extends BaseFragment implements MainC
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        mPresenter = new MainPresenter(this, MainListRepository.getInstance(MainLocalDataSource.getInstance(), MainRemoteDataSource.getInstance()));
+        mPresenter = new MainPresenter(this, MainListRepository.getInstance(MainLocalDataSource.getInstance(getContext().getApplicationContext()), MainRemoteDataSource.getInstance()));
         super.onActivityCreated(savedInstanceState);
     }
 
