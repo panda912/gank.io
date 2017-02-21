@@ -13,9 +13,21 @@ import android.view.ViewGroup;
  */
 public class BaseFragment extends Fragment {
 
+    private boolean isPrepared = false;
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser && isPrepared) {
+            onVisible();
+        } else {
+            onInvisible();
+        }
     }
 
     @Override
@@ -37,10 +49,24 @@ public class BaseFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        isPrepared = true;
+        if (getUserVisibleHint()) {
+            onVisible();
+        } else {
+            onInvisible();
+        }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
+    }
+
+    public void onVisible() {
+
+    }
+
+    public void onInvisible() {
+
     }
 }

@@ -47,10 +47,10 @@ public class SearchActivity extends BaseActivity implements SearchContract.View,
 
     private SearchListAdapter mAdapter;
 
-    @Override
-    public void setPresenter(SearchContract.Presenter presenter) {
-        mPresenter = presenter;
-    }
+//    @Override
+//    public void setPresenter(SearchContract.Presenter presenter) {
+//        mPresenter = presenter;
+//    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

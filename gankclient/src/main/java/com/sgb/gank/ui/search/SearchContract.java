@@ -13,14 +13,19 @@ public class SearchContract {
 
     interface View extends BaseView<Presenter> {
         void showResults(List<SearchListObj> list);
+
         void showNoResult();
+
         void showError(String msg);
+
         void showDetail(String url);
     }
 
     interface Presenter extends BasePresenter {
         void loadResults(String keyword);
+
         void cancelLoadTask();
+
         void openDetail(SearchListObj obj);
     }
 }

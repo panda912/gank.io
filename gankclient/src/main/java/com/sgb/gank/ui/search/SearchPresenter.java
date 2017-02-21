@@ -18,8 +18,8 @@ public class SearchPresenter implements SearchContract.Presenter {
 
     public SearchPresenter(SearchContract.View searchView, SearchRepository repository) {
         mSearchView = searchView;
-        mSearchView.setPresenter(this);
         mRepository = repository;
+//        mSearchView.setPresenter(this);
     }
 
     @Override

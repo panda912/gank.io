@@ -11,12 +11,17 @@ import android.view.ViewGroup;
 
 import com.sgb.gank.R;
 import com.sgb.gank.data.main.module.MainListResBody;
+import com.sgb.gank.data.main.source.MainConstant;
 import com.sgb.gank.data.main.source.MainListRepository;
+import com.sgb.gank.data.main.source.local.MainLocalDataSource;
 import com.sgb.gank.data.main.source.remote.ApiService;
+import com.sgb.gank.data.main.source.remote.MainRemoteDataSource;
 import com.sgb.gank.databinding.FragmentMainBinding;
 import com.sgb.gank.net.RetrofitService;
 import com.sgb.gank.net.exception.BizException;
 import com.sgb.gank.ui.BaseFragment;
+import com.sgb.gank.ui.main.MainContract;
+import com.sgb.gank.ui.main.MainPresenter;
 import com.sgb.gank.util.PLog;
 import com.youzan.titan.TitanRecyclerView;
 
@@ -30,21 +35,9 @@ import io.reactivex.schedulers.Schedulers;
 /**
  * Created by panda on 2016/10/21 下午1:31.
  */
-public abstract class BaseMainListFragment extends BaseFragment {
+public abstract class BaseMainListFragment extends BaseFragment implements MainContract.View {
 
-//    public static final String CATEGORY_ANDROID = "Android";
-//    public static final String CATEGORY_IOS = "iOS";
-//    public static final String CATEGORY_VEDIO = "休息视频";
-//    public static final String CATEGORY_MEITU = "福利";
-//    public static final String CATEGORY_ZIYUANTUOZHAN = "拓展资源";
-//    public static final String CATEGORY_QIANDUAN = "前端";
-//    public static final String CATEGORY_XIATUIJIAN = "瞎推荐";
-//    public static final String CATEGORY_APP = "App";
-//
-//    @StringDef({CATEGORY_ANDROID, CATEGORY_IOS, CATEGORY_VEDIO, CATEGORY_MEITU, CATEGORY_ZIYUANTUOZHAN, CATEGORY_QIANDUAN, CATEGORY_XIATUIJIAN, CATEGORY_APP})
-//    @Retention(RetentionPolicy.SOURCE)
-//    public @interface Category {
-//    }
+    protected MainContract.Presenter mPresenter;
 
     private FragmentMainBinding binding;
 
@@ -95,18 +88,18 @@ public abstract class BaseMainListFragment extends BaseFragment {
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        mPresenter = new MainPresenter(this, MainListRepository.getInstance(MainLocalDataSource.getInstance(), MainRemoteDataSource.getInstance()));
         super.onActivityCreated(savedInstanceState);
     }
 
     @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser && isFirstLoad) {
+    public void onVisible() {
+        if (isFirstLoad) {
             request();
         }
     }
 
-    public void requestData(@MainListRepository.Category String category, int count, int reqPage) {
+    public void requestData(@MainConstant.Category String category, int count, int reqPage) {
         RetrofitService.getInstance().createService(ApiService.class)
                 .getDataList(category, count, reqPage)
                 .subscribeOn(Schedulers.io())
@@ -137,7 +130,6 @@ public abstract class BaseMainListFragment extends BaseFragment {
                     }
                 });
     }
-
 
     public void resetData() {
         mReqPage = 1;

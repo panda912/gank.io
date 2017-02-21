@@ -79,22 +79,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         }
     }
 
-//    private void createFragment(int position) {
-//        switch (position) {
-//            case 0:
-//                AndroidTechFragment mAndroidTechFragment = AndroidTechFragment.newInstance("", "");
-//                break;
-//            case 1:
-//                IOSTechFragment mIOSTechFragment = IOSTechFragment.newInstance("", "");
-//                break;
-//            case 2:
-//                DiDiDiFragment mDiDiDiFragment = DiDiDiFragment.newInstance("", "");
-//                break;
-//            default:
-//                break;
-//        }
-//    }
-
     @Override
     public void setStatusBar() {
         //do nothing
