@@ -9,16 +9,23 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import com.sgb.gank.data.search.module.SearchListObj;
 import com.sgb.gank.data.search.source.SearchDataSource;
+import com.sgb.gank.util.DateUtils;
 
+import org.reactivestreams.Publisher;
+
+import java.util.Date;
 import java.util.List;
 
 import io.reactivex.Flowable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
+
 
 /**
  * Created by panda on 2017/2/17 上午10:58.
@@ -44,31 +51,41 @@ public class SearchLocalDataSource implements SearchDataSource {
 
     @Override
     public Flowable<List<SearchListObj>> getSearchList(String keyword) {
-        Flowable.just(keyword)
+        return Flowable.just(keyword)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<String>() {
+                .flatMap(new Function<String, Publisher<List<SearchListObj>>>() {
                     @Override
-                    public void accept(String s) throws Exception {
-                        String sql = "SELECT * FROM " + SearchDBHelper.TABLE_NAME + " WHERE " + SearchDBHelper.COLUMN_KEYWORD + "='" + keyword + "'";
+                    public Publisher<List<SearchListObj>> apply(String s) throws Exception {
+                        String sql = "SELECT * FROM " + SearchDBHelper.TABLE_NAME +
+                                " WHERE " + SearchDBHelper.COLUMN_KEYWORD + "='" + keyword + "'";
                         Cursor cursor = mDatabase.rawQuery(sql, null);
                         if (cursor.moveToFirst()) {
                             do {
                                 String str = cursor.getString(cursor.getColumnIndex(SearchDBHelper.COLUMN_KEYWORD));
                                 if (TextUtils.equals(keyword, str)) {
-                                    break;
+                                    String updateTime = cursor.getString(cursor.getColumnIndex(SearchDBHelper.COLUMN_UPDATE_DATE));
+                                    String insertTime = cursor.getString(cursor.getColumnIndex(SearchDBHelper.COLUMN_INSERT_DATE));
+                                    String lastUpdateTime = !TextUtils.isEmpty(updateTime) ? updateTime : insertTime;
+                                    Date lastUpdateDate = DateUtils.format(lastUpdateTime);
+                                    long duration = System.currentTimeMillis() - lastUpdateDate.getTime();
+                                    Log.e("duration", duration + "");
+                                    if (duration < SearchDBHelper.CACHE_DURATION) {
+                                        String json = cursor.getString(cursor.getColumnIndex(SearchDBHelper.COLUMN_DATA));
+                                        List<SearchListObj> searchList = new GsonBuilder().create().fromJson(json, new TypeToken<List<SearchListObj>>() {
+                                        }.getType());
+                                        cursor.close();
+                                        return Flowable.just(searchList);
+                                    }
+                                    cursor.close();
+                                    return Flowable.empty();
                                 }
                             } while (cursor.moveToNext());
                         }
                         cursor.close();
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-
+                        return Flowable.empty();
                     }
                 });
-        return null;
     }
 
     @Override
@@ -90,6 +107,7 @@ public class SearchLocalDataSource implements SearchDataSource {
                                 String str = cursor.getString(cursor.getColumnIndex(SearchDBHelper.COLUMN_KEYWORD));
                                 if (TextUtils.equals(keyword, str)) {
                                     isExist = true;
+                                    cursor.close();
                                     break;
                                 }
                             } while (cursor.moveToNext());
@@ -100,9 +118,10 @@ public class SearchLocalDataSource implements SearchDataSource {
 //                            updateValues.put(SearchDBHelper.COLUMN_DATA, json);
 //                            updateValues.put(SearchDBHelper.COLUMN_UPDATE_DATE, "datetime('now','localtime')");
 //                            String where = SearchDBHelper.COLUMN_KEYWORD + "='" + keyword + "'";
-//                            mDatabase.update(DBConfig.TABLE_NAME, updateValues, where, null);
+//                            mDatabase.update(SearchDBHelper.TABLE_NAME, updateValues, where, null);
                             String updateSql = "UPDATE " + SearchDBHelper.TABLE_NAME +
-                                    " SET " + SearchDBHelper.COLUMN_UPDATE_DATE + "=datetime('now','localtime') WHERE " + SearchDBHelper.COLUMN_KEYWORD + "='" + keyword + "'";
+                                    " SET " + SearchDBHelper.COLUMN_UPDATE_DATE + "=datetime('now','localtime')" +
+                                    " WHERE " + SearchDBHelper.COLUMN_KEYWORD + "='" + keyword + "'";
                             mDatabase.execSQL(updateSql);
                         } else {
                             ContentValues values = new ContentValues();
@@ -110,7 +129,6 @@ public class SearchLocalDataSource implements SearchDataSource {
                             values.put(SearchDBHelper.COLUMN_DATA, json);
                             mDatabase.insert(SearchDBHelper.TABLE_NAME, null, values);
                         }
-                        cursor.close();
                     }
                 }, new Consumer<Throwable>() {
                     @Override

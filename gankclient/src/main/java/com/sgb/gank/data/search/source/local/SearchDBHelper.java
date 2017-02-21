@@ -12,6 +12,8 @@ import com.sgb.gank.data.DBConfig;
 public class SearchDBHelper extends SQLiteOpenHelper {
     public static final String TABLE_NAME = "search_history";
 
+    public static final long CACHE_DURATION = 60 * 60 * 1000; //ms  1小时
+
     public static final String COLUMN_ID = "id";
     public static final String COLUMN_KEYWORD = "keyword";
     public static final String COLUMN_DATA = "data";

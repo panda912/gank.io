@@ -41,7 +41,7 @@ public class SearchRemoteDataSource implements SearchDataSource {
         return Flowable.just(keyword)
                 .map(s -> "http://gank.io/search?q=" + s.replace(" ", "+"))
                 .map(s -> {
-                    Document doc = Jsoup.parse(new URL(s), 5000);
+                    Document doc = Jsoup.parse(new URL(s), 30000);
                     return doc.select("div.container.content > ol > li");
                 })
                 .flatMap(new Function<Elements, Publisher<List<SearchListObj>>>() {
