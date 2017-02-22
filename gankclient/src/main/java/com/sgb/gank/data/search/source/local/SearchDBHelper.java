@@ -31,11 +31,12 @@ public class SearchDBHelper extends SQLiteOpenHelper {
 
     public SearchDBHelper(Context context) {
         super(context, DBConfig.DB_NAME, null, DBConfig.DB_VERSION);
+        getWritableDatabase().execSQL(SQL_CREATE_TABLE);
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL(SQL_CREATE_TABLE);
+
     }
 
     @Override

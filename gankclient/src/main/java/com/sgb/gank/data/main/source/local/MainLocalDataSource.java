@@ -27,11 +27,11 @@ import io.reactivex.schedulers.Schedulers;
 public class MainLocalDataSource implements MainDataSource {
     private static MainLocalDataSource sInstance;
 
-    private AndroidDBHelper mDbHelper;
+    private GankDBHelper mDbHelper;
     private SQLiteDatabase mDB;
 
     private MainLocalDataSource(Context context) {
-        mDbHelper = new AndroidDBHelper(context);
+        mDbHelper = new GankDBHelper(context);
         mDB = mDbHelper.getWritableDatabase();
     }
 
@@ -51,16 +51,16 @@ public class MainLocalDataSource implements MainDataSource {
 
                         List<MainListResBody.ResultsObj> list = new ArrayList<>();
 
-                        String sql = "SELECT * FROM " + AndroidDBHelper.TABLE_NAME;
+                        String sql = "SELECT * FROM " + GankDBHelper.TABLE_NAME;
                         Cursor cursor = mDB.rawQuery(sql, null);
                         if (cursor.moveToFirst()) {
                             do {
-                                String id = cursor.getColumnName(cursor.getColumnIndex(AndroidDBHelper.COLUMN_ID));
-                                String url = cursor.getColumnName(cursor.getColumnIndex(AndroidDBHelper.COLUMN_URL));
-                                String desc = cursor.getColumnName(cursor.getColumnIndex(AndroidDBHelper.COLUMN_DESC));
-                                String type = cursor.getColumnName(cursor.getColumnIndex(AndroidDBHelper.COLUMN_TYPE));
-                                String author = cursor.getColumnName(cursor.getColumnIndex(AndroidDBHelper.COLUMN_AUTHOR));
-                                String time = cursor.getColumnName(cursor.getColumnIndex(AndroidDBHelper.COLUMN_PUBLISHED_TIME));
+                                String id = cursor.getColumnName(cursor.getColumnIndex(GankDBHelper.COLUMN_ID));
+                                String url = cursor.getColumnName(cursor.getColumnIndex(GankDBHelper.COLUMN_URL));
+                                String desc = cursor.getColumnName(cursor.getColumnIndex(GankDBHelper.COLUMN_DESC));
+                                String type = cursor.getColumnName(cursor.getColumnIndex(GankDBHelper.COLUMN_TYPE));
+                                String author = cursor.getColumnName(cursor.getColumnIndex(GankDBHelper.COLUMN_AUTHOR));
+                                String time = cursor.getColumnName(cursor.getColumnIndex(GankDBHelper.COLUMN_PUBLISHED_TIME));
 
                                 MainListResBody.ResultsObj obj = new MainListResBody.ResultsObj();
                                 obj.id = id;
@@ -88,16 +88,24 @@ public class MainLocalDataSource implements MainDataSource {
                     public void accept(List<MainListResBody.ResultsObj> list) throws Exception {
                         mDB.beginTransaction();
                         for (MainListResBody.ResultsObj obj : list) {
+
+                            String querySql = "SELECT * FROM " + GankDBHelper.TABLE_NAME + " WHERE " + GankDBHelper.COLUMN_ID + "='" + obj.id + "'";
+                            Cursor cursor = mDB.rawQuery(querySql, null);
+                            if (cursor != null && cursor.moveToFirst()) {
+                                cursor.close();
+                                continue;
+                            }
+
                             ContentValues value = new ContentValues();
-                            value.put(AndroidDBHelper.COLUMN_ID, obj.id);
-                            value.put(AndroidDBHelper.COLUMN_TYPE, obj.type);
-                            value.put(AndroidDBHelper.COLUMN_SOURCE, obj.source);
-                            value.put(AndroidDBHelper.COLUMN_URL, obj.url);
-                            value.put(AndroidDBHelper.COLUMN_DESC, obj.desc);
-                            value.put(AndroidDBHelper.COLUMN_AUTHOR, obj.who);
-                            value.put(AndroidDBHelper.COLUMN_CREATE_TIME, obj.createdAt);
-                            value.put(AndroidDBHelper.COLUMN_PUBLISHED_TIME, obj.publishedAt);
-                            mDB.insert(AndroidDBHelper.TABLE_NAME, null, value);
+                            value.put(GankDBHelper.COLUMN_ID, obj.id);
+                            value.put(GankDBHelper.COLUMN_TYPE, obj.type);
+                            value.put(GankDBHelper.COLUMN_SOURCE, obj.source);
+                            value.put(GankDBHelper.COLUMN_URL, obj.url);
+                            value.put(GankDBHelper.COLUMN_DESC, obj.desc);
+                            value.put(GankDBHelper.COLUMN_AUTHOR, obj.who);
+                            value.put(GankDBHelper.COLUMN_CREATE_TIME, obj.createdAt);
+                            value.put(GankDBHelper.COLUMN_PUBLISHED_TIME, obj.publishedAt);
+                            mDB.insert(GankDBHelper.TABLE_NAME, null, value);
                         }
                         mDB.setTransactionSuccessful();
                         mDB.endTransaction();
