@@ -4,7 +4,8 @@ import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,42 +15,51 @@ import com.sgb.gank.data.main.module.MainListResBody;
 import com.sgb.gank.data.main.source.MainConstant;
 import com.sgb.gank.data.main.source.MainListRepository;
 import com.sgb.gank.data.main.source.local.MainLocalDataSource;
-import com.sgb.gank.data.main.source.remote.ApiService;
 import com.sgb.gank.data.main.source.remote.MainRemoteDataSource;
 import com.sgb.gank.databinding.FragmentMainBinding;
-import com.sgb.gank.net.RetrofitService;
-import com.sgb.gank.net.exception.BizException;
 import com.sgb.gank.ui.BaseFragment;
 import com.sgb.gank.ui.main.MainContract;
 import com.sgb.gank.ui.main.MainPresenter;
-import com.sgb.gank.util.PLog;
+import com.sgb.gank.util.ToastUtils;
 import com.youzan.titan.TitanRecyclerView;
 
-import io.reactivex.Flowable;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.functions.Consumer;
-import io.reactivex.functions.Function;
-import io.reactivex.schedulers.Schedulers;
+import java.util.List;
 
 
 /**
  * Created by panda on 2016/10/21 下午1:31.
  */
-public abstract class BaseMainListFragment extends BaseFragment implements MainContract.View {
+public class CommonListFragment extends BaseFragment implements MainContract.View {
+    private static final String EXTRA_CATEGORY = "extra_category";
+    private static final int REQ_COUNT = 20;
 
     protected MainContract.Presenter mPresenter;
-
     private FragmentMainBinding binding;
-
     protected MainListAdapter mAdapter;
 
-    protected boolean isFirstLoad = true;
+    private String mCategory;
+    private boolean isFirstLoad = true;
+    private int mReqPage = 1;
+    private boolean hasMore = true;
 
-    protected int mReqPage = 1;
+
+    public CommonListFragment() {
+    }
+
+    public static CommonListFragment newInstance(@MainConstant.Category String category) {
+        CommonListFragment fragment = new CommonListFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(EXTRA_CATEGORY, category);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            mCategory = getArguments().getString(EXTRA_CATEGORY);
+        }
     }
 
     @Nullable
@@ -66,12 +76,23 @@ public abstract class BaseMainListFragment extends BaseFragment implements MainC
         final SwipeRefreshLayout swipeRefreshLayout = binding.swipeRefreshLayout;
         TitanRecyclerView recyclerView = binding.recyclerView;
 
-        recyclerView.setLayoutManager(getLayoutManager());
+        switch (mCategory) {
+            case MainConstant.CATEGORY_ANDROID:
+            case MainConstant.CATEGORY_FRONTEND:
+            case MainConstant.CATEGORY_IOS:
+                recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+                break;
+            case MainConstant.CATEGORY_PIC:
+                recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
+                break;
+            default:
+                break;
+        }
         recyclerView.setAdapter(mAdapter = new MainListAdapter(getContext()));
         recyclerView.setOnLoadMoreListener(new TitanRecyclerView.OnLoadMoreListener() {
             @Override
             public void onLoadMore() {
-                request();
+                mPresenter.loadDatas(mCategory, REQ_COUNT, mReqPage);
             }
         });
 
@@ -80,7 +101,7 @@ public abstract class BaseMainListFragment extends BaseFragment implements MainC
             @Override
             public void onRefresh() {
                 resetData();
-                request();
+                mPresenter.loadDatas(mCategory, REQ_COUNT, mReqPage);
                 swipeRefreshLayout.setRefreshing(false);
             }
         });
@@ -95,40 +116,8 @@ public abstract class BaseMainListFragment extends BaseFragment implements MainC
     @Override
     public void onVisible() {
         if (isFirstLoad) {
-            request();
+            mPresenter.loadDatas(mCategory, REQ_COUNT, mReqPage);
         }
-    }
-
-    public void requestData(@MainConstant.Category String category, int count, int reqPage) {
-        RetrofitService.getInstance().createService(ApiService.class)
-                .getDataList(category, count, reqPage)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .flatMap(new Function<MainListResBody, Flowable<MainListResBody>>() {
-                    @Override
-                    public Flowable<MainListResBody> apply(MainListResBody resBody) throws Exception {
-                        if (resBody.error) {
-                            return Flowable.error(new BizException(resBody.msg));
-                        }
-                        return Flowable.just(resBody);
-                    }
-                })
-                .subscribe(new Consumer<MainListResBody>() {
-                    @Override
-                    public void accept(MainListResBody resBody) throws Exception {
-                        mAdapter.addDataEnd(resBody.results);
-                        mReqPage++;
-
-                        if (isFirstLoad) {
-                            isFirstLoad = false;
-                        }
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-                        PLog.e("onError", throwable.getMessage());
-                    }
-                });
     }
 
     public void resetData() {
@@ -136,8 +125,27 @@ public abstract class BaseMainListFragment extends BaseFragment implements MainC
         mAdapter.clearData();
     }
 
-    public abstract RecyclerView.LayoutManager getLayoutManager();
+    @Override
+    public void showLoading() {
 
-    public abstract void request();
+    }
 
+    @Override
+    public void showDatas(List<MainListResBody.ResultsObj> list, boolean hasMore) {
+        mAdapter.addDataEnd(list);
+        mReqPage++;
+        if (isFirstLoad) {
+            isFirstLoad = false;
+        }
+    }
+
+    @Override
+    public void showNoResult() {
+
+    }
+
+    @Override
+    public void showError(String msg) {
+        ToastUtils.showShort(msg, getContext());
+    }
 }

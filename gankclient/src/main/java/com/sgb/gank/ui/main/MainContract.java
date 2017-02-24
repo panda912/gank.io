@@ -15,7 +15,7 @@ public class MainContract {
     public interface View extends BaseView<Presenter> {
         void showLoading();
 
-        void showDatas(List<MainListResBody.ResultsObj> list);
+        void showDatas(List<MainListResBody.ResultsObj> list, boolean hasMore);
 
         void showNoResult();
 

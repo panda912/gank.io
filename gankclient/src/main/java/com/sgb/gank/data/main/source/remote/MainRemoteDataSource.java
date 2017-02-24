@@ -46,6 +46,12 @@ public class MainRemoteDataSource implements MainDataSource {
                         }
                         return Flowable.just(resBody.results);
                     }
+                })
+                .onErrorResumeNext(new Function<Throwable, Publisher<? extends List<MainListResBody.ResultsObj>>>() {
+                    @Override
+                    public Publisher<? extends List<MainListResBody.ResultsObj>> apply(Throwable throwable) throws Exception {
+                        return Flowable.empty();
+                    }
                 });
     }
 

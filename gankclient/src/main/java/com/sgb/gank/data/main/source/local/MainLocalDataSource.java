@@ -44,23 +44,22 @@ public class MainLocalDataSource implements MainDataSource {
 
     @Override
     public Flowable<List<MainListResBody.ResultsObj>> getDatas(@MainConstant.Category String category, int count, int reqPage) {
-        return Flowable.empty()
-                .flatMap(new Function<Object, Publisher<List<MainListResBody.ResultsObj>>>() {
+        return Flowable.just(category)
+                .flatMap(new Function<String, Publisher<List<MainListResBody.ResultsObj>>>() {
                     @Override
-                    public Publisher<List<MainListResBody.ResultsObj>> apply(Object o) throws Exception {
-
+                    public Publisher<List<MainListResBody.ResultsObj>> apply(String category) throws Exception {
                         List<MainListResBody.ResultsObj> list = new ArrayList<>();
 
-                        String sql = "SELECT * FROM " + GankDBHelper.TABLE_NAME;
+                        String sql = "SELECT * FROM " + GankDBHelper.TABLE_NAME + " WHERE " + GankDBHelper.COLUMN_TYPE + "='" + category + "'";
                         Cursor cursor = mDB.rawQuery(sql, null);
                         if (cursor.moveToFirst()) {
                             do {
-                                String id = cursor.getColumnName(cursor.getColumnIndex(GankDBHelper.COLUMN_ID));
-                                String url = cursor.getColumnName(cursor.getColumnIndex(GankDBHelper.COLUMN_URL));
-                                String desc = cursor.getColumnName(cursor.getColumnIndex(GankDBHelper.COLUMN_DESC));
-                                String type = cursor.getColumnName(cursor.getColumnIndex(GankDBHelper.COLUMN_TYPE));
-                                String author = cursor.getColumnName(cursor.getColumnIndex(GankDBHelper.COLUMN_AUTHOR));
-                                String time = cursor.getColumnName(cursor.getColumnIndex(GankDBHelper.COLUMN_PUBLISHED_TIME));
+                                String id = cursor.getString(cursor.getColumnIndex(GankDBHelper.COLUMN_ID));
+                                String url = cursor.getString(cursor.getColumnIndex(GankDBHelper.COLUMN_URL));
+                                String desc = cursor.getString(cursor.getColumnIndex(GankDBHelper.COLUMN_DESC));
+                                String type = cursor.getString(cursor.getColumnIndex(GankDBHelper.COLUMN_TYPE));
+                                String author = cursor.getString(cursor.getColumnIndex(GankDBHelper.COLUMN_AUTHOR));
+                                String time = cursor.getString(cursor.getColumnIndex(GankDBHelper.COLUMN_PUBLISHED_TIME));
 
                                 MainListResBody.ResultsObj obj = new MainListResBody.ResultsObj();
                                 obj.id = id;

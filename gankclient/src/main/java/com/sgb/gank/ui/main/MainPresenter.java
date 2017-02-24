@@ -37,7 +37,7 @@ public class MainPresenter implements MainContract.Presenter {
                 .subscribe(new Consumer<List<MainListResBody.ResultsObj>>() {
                     @Override
                     public void accept(List<MainListResBody.ResultsObj> list) throws Exception {
-                        mMainView.showDatas(list);
+                        mMainView.showDatas(list, false);
                     }
                 }, new Consumer<Throwable>() {
                     @Override

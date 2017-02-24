@@ -5,7 +5,6 @@ import com.sgb.gank.data.main.module.MainListResBody;
 import java.util.List;
 
 import io.reactivex.Flowable;
-import io.reactivex.functions.Consumer;
 
 /**
  * Created by panda on 2016/11/17 上午10:58.
@@ -30,25 +29,12 @@ public class MainListRepository implements MainDataSource {
 
     @Override
     public Flowable<List<MainListResBody.ResultsObj>> getDatas(@MainConstant.Category String category, int count, int reqPage) {
-        switch (category) {
-            case MainConstant.CATEGORY_ANDROID:
-                Flowable<List<MainListResBody.ResultsObj>> local = mLocalDataSource.getDatas(category, count, reqPage);
-                Flowable<List<MainListResBody.ResultsObj>> remote = mRemoteDataSource.getDatas(category, count, reqPage)
-                        .doOnNext(new Consumer<List<MainListResBody.ResultsObj>>() {
-                            @Override
-                            public void accept(List<MainListResBody.ResultsObj> list) throws Exception {
-                                mLocalDataSource.saveDatas(category, list);
-                            }
-                        });
-                return Flowable.concat(remote, local)
-                        .take(1);
-            case MainConstant.CATEGORY_IOS:
-                return mRemoteDataSource.getDatas(category, count, reqPage);
-            case MainConstant.CATEGORY_MEITU:
-                return mRemoteDataSource.getDatas(category, count, reqPage);
-            default:
-                return mRemoteDataSource.getDatas(category, count, reqPage);
-        }
+        Flowable<List<MainListResBody.ResultsObj>> local = mLocalDataSource.getDatas(category, count, reqPage);
+        Flowable<List<MainListResBody.ResultsObj>> remote = mRemoteDataSource.getDatas(category, count, reqPage)
+                .doOnNext(list -> mLocalDataSource.saveDatas(category, list));
+        return Flowable.concat(local, remote)
+                .filter(list -> list != null && !list.isEmpty())
+                .take(1);
     }
 
     @Override

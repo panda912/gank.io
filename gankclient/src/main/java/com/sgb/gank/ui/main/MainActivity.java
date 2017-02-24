@@ -17,11 +17,10 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.sgb.gank.R;
+import com.sgb.gank.data.main.source.MainConstant;
 import com.sgb.gank.databinding.ActivityGankMainBinding;
 import com.sgb.gank.ui.BaseActivity;
-import com.sgb.gank.ui.main.fragment.AndroidListFragment;
-import com.sgb.gank.ui.main.fragment.DiDiDiFragment;
-import com.sgb.gank.ui.main.fragment.IOSListFragment;
+import com.sgb.gank.ui.main.fragment.CommonListFragment;
 import com.sgb.gank.ui.search.SearchActivity;
 import com.sgb.gank.ui.setting.SettingActivity;
 import com.sgb.gank.util.ActivityUtils;
@@ -56,14 +55,25 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         navigationView.setNavigationItemSelectedListener(this);
 
         if (savedInstanceState == null) {
-            AndroidListFragment mAndroidTechFragment = AndroidListFragment.newInstance();
-            IOSListFragment mIOSTechFragment = IOSListFragment.newInstance();
-            DiDiDiFragment mDiDiDiFragment = DiDiDiFragment.newInstance("", "");
-
             List<Fragment> fragmentList = new ArrayList<>();
-            fragmentList.add(mAndroidTechFragment);
-            fragmentList.add(mIOSTechFragment);
-            fragmentList.add(mDiDiDiFragment);
+
+            CommonListFragment mAndroidListFragment = CommonListFragment.newInstance(MainConstant.CATEGORY_ANDROID);
+            CommonListFragment mFrontEndListFragment = CommonListFragment.newInstance(MainConstant.CATEGORY_FRONTEND);
+            CommonListFragment mIOSListFragment = CommonListFragment.newInstance(MainConstant.CATEGORY_IOS);
+            CommonListFragment mPicListFragment = CommonListFragment.newInstance(MainConstant.CATEGORY_PIC);
+            CommonListFragment mVedioListFragment = CommonListFragment.newInstance(MainConstant.CATEGORY_VEDIO);
+            CommonListFragment mExpandResListFragment = CommonListFragment.newInstance(MainConstant.CATEGORY_EXPAND_RES);
+            CommonListFragment mRecommendListFragment = CommonListFragment.newInstance(MainConstant.CATEGORY_RECOMMEND);
+            CommonListFragment mAppListFragment = CommonListFragment.newInstance(MainConstant.CATEGORY_APP);
+
+            fragmentList.add(mAndroidListFragment);
+            fragmentList.add(mFrontEndListFragment);
+            fragmentList.add(mIOSListFragment);
+            fragmentList.add(mPicListFragment);
+            fragmentList.add(mVedioListFragment);
+            fragmentList.add(mExpandResListFragment);
+            fragmentList.add(mRecommendListFragment);
+            fragmentList.add(mAppListFragment);
 
             viewPager.setOffscreenPageLimit(fragmentList.size() - 1);
             viewPager.setAdapter(new MainPagerAdapter(getSupportFragmentManager(), fragmentList, getResources().getStringArray(R.array.main_tab_titles)));
