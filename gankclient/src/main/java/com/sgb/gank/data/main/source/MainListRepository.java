@@ -5,6 +5,7 @@ import com.sgb.gank.data.main.module.MainListResBody;
 import java.util.List;
 
 import io.reactivex.Flowable;
+import io.reactivex.functions.Predicate;
 
 /**
  * Created by panda on 2016/11/17 上午10:58.
@@ -32,8 +33,14 @@ public class MainListRepository implements MainDataSource {
         Flowable<List<MainListResBody.ResultsObj>> local = mLocalDataSource.getDatas(category, count, reqPage);
         Flowable<List<MainListResBody.ResultsObj>> remote = mRemoteDataSource.getDatas(category, count, reqPage)
                 .doOnNext(list -> mLocalDataSource.saveDatas(category, list));
-        return Flowable.concat(local, remote)
-                .filter(list -> list != null && !list.isEmpty())
+
+        return Flowable.concat(remote, local)
+                .filter(new Predicate<List<MainListResBody.ResultsObj>>() {
+                    @Override
+                    public boolean test(List<MainListResBody.ResultsObj> list) throws Exception {
+                        return list != null && !list.isEmpty();
+                    }
+                })
                 .take(1);
     }
 

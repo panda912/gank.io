@@ -58,7 +58,7 @@ public class MainListAdapter extends TitanAdapter<MainListResBody.ResultsObj> {
             ViewHolderWithPic holder1 = (ViewHolderWithPic) holder;
 
             ImageLoader.with(mContext)
-                    .load(resultsObj.images.get(0))
+                    .load(resultsObj.images.get(0) + "?imageView2/0/w/100")
                     .build()
                     .into(holder1.thumbnailIV);
 

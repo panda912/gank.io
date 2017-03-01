@@ -30,5 +30,5 @@ public interface ApiService {
     @ApiCache(name = "ioslist", duration = 60)
     @GET("data/iOS/{count}/{page}")
     Flowable<MainListResBody> getIOSDataList(@Path("count") int count,
-                                               @Path("page") int reqPage);
+                                             @Path("page") int reqPage);
 }
